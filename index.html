@@ -106,6 +106,42 @@
             font-size: 1.2rem;
         }
 
+        /* Scroll Down Button */
+        .scroll-down-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-blue);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 119, 182, 0.4);
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-down-btn:hover {
+            transform: translateX(-50%) scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 119, 182, 0.6);
+        }
+
+        .scroll-down-btn i {
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .scroll-down-btn.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
         /* Language Switcher */
         .lang-switcher {
             position: fixed;
@@ -930,7 +966,7 @@
                 </div>
             </div>
         </div>
-        <div class="scroll-indicator" onclick="scrollToSection('profile')" style="cursor: pointer;">
+        <div class="scroll-indicator" style="display: none;">
             <i class="fas fa-chevron-down"></i>
         </div>
     </section>
@@ -1036,19 +1072,19 @@
     <section id="research">
         <h2 class="section-title" data-en="Research & Publications" data-vi="Nghiên Cứu & Công Bố" data-zh="研究與出版">Research & Publications</h2>
         
-        <div class="research-card" onclick="openModal('Sign.pdf')">
+        <div class="research-card" onclick="openModal('Nguyen Thanh Tue Thuy (signed)_page-0001.jpg')">
             <h3 data-en="Conference Paper (2025)" data-vi="Bài báo Hội nghị (2025)" data-zh="會議論文（2025）">Conference Paper (2025)</h3>
             <p class="venue">International Conference on Multidisciplinary Research (ICMR2025), Vietnamese German University</p>
             <p data-en="\"Analyzing the Impact of TikTok Influencers on Online Shopping Intention of Gen Z in Da Nang, Vietnam\"" data-vi="\"Phân tích Tác động của Người ảnh hưởng TikTok đến Ý định Mua sắm Trực tuyến của Thế hệ Z tại Đà Nẵng, Việt Nam\"" data-zh="「分析TikTok網紅對越南峴港Z世代線上購物意向的影響」">"Analyzing the Impact of TikTok Influencers on Online Shopping Intention of Gen Z in Da Nang, Vietnam"</p>
-            <p class="view-cert"><i class="fas fa-file-pdf"></i> <span data-en="Click to view certificate" data-vi="Nhấn để xem chứng nhận" data-zh="點擊查看證書">Click to view certificate</span></p>
+            <p class="view-cert"><i class="fas fa-image"></i> <span data-en="Click to view certificate" data-vi="Nhấn để xem chứng nhận" data-zh="點擊查看證書">Click to view certificate</span></p>
         </div>
 
-        <div class="research-card" onclick="openModal('SOCIALIST REPUBLIC OF VIETNAM (1) copy 4.pdf')">
+        <div class="research-card" onclick="openModal('SOCIALIST REPUBLIC OF VIETNAM_page-0001.jpeg')">
             <h3 data-en="Student Research Project (2023–2024)" data-vi="Đề tài Nghiên cứu Sinh viên (2023–2024)" data-zh="學生研究項目（2023–2024）">Student Research Project (2023–2024)</h3>
             <p class="venue">University of Economics – University of Danang (DUE-UDN)</p>
             <p data-en="\"Analysis of the Contribution of Economic Sectors to GRDP Growth in Da Nang\"" data-vi="\"Phân tích Đóng góp của các Ngành Kinh tế vào Tăng trưởng GRDP tại Đà Nẵng\"" data-zh="「峴港各經濟部門對GRDP增長貢獻分析」">"Analysis of the Contribution of Economic Sectors to GRDP Growth in Da Nang"</p>
             <p style="color: var(--text-gray); margin-top: 10px;" data-en="Supervisor: PhD. Pham Quang Tin | Officially certified by the Vice Rector (May 2024)" data-vi="Giảng viên hướng dẫn: TS. Phạm Quang Tín | Được Phó Hiệu trưởng xác nhận chính thức (Tháng 5/2024)" data-zh="指導教授：范光信博士 | 由副校長正式認證（2024年5月）">Supervisor: PhD. Pham Quang Tin | Officially certified by the Vice Rector (May 2024)</p>
-            <p class="view-cert"><i class="fas fa-file-pdf"></i> <span data-en="Click to view certificate" data-vi="Nhấn để xem chứng nhận" data-zh="點擊查看證書">Click to view certificate</span></p>
+            <p class="view-cert"><i class="fas fa-image"></i> <span data-en="Click to view certificate" data-vi="Nhấn để xem chứng nhận" data-zh="點擊查看證書">Click to view certificate</span></p>
         </div>
     </section>
 
@@ -1129,6 +1165,11 @@
             </div>
         </div>
     </div>
+
+    <!-- Scroll Down Button -->
+    <button class="scroll-down-btn" id="scrollDownBtn" onclick="scrollToNextSection()">
+        <i class="fas fa-chevron-down"></i>
+    </button>
 
     <script>
         // Language switching functionality
@@ -1257,6 +1298,52 @@
                 behavior: 'smooth'
             });
         }
+
+        // Scroll to next section functionality
+        const allSections = ['hero', 'profile', 'skills', 'experience', 'research', 'certifications', 'activities'];
+        const scrollDownBtn = document.getElementById('scrollDownBtn');
+
+        function scrollToNextSection() {
+            const scrollPosition = window.scrollY + window.innerHeight / 2;
+            
+            for (let i = 0; i < allSections.length - 1; i++) {
+                const currentSection = document.getElementById(allSections[i]);
+                const nextSection = document.getElementById(allSections[i + 1]);
+                
+                if (currentSection && nextSection) {
+                    const currentTop = currentSection.offsetTop;
+                    const nextTop = nextSection.offsetTop;
+                    
+                    if (scrollPosition >= currentTop && scrollPosition < nextTop) {
+                        nextSection.scrollIntoView({ behavior: 'smooth' });
+                        return;
+                    }
+                }
+            }
+            
+            // If at the last section or couldn't find, scroll to first section
+            const firstSection = document.getElementById(allSections[1]);
+            if (firstSection) {
+                firstSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Hide scroll-down button when near the bottom
+        function updateScrollDownBtn() {
+            const scrollPosition = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            
+            // Hide when near footer (last 200px of page)
+            if (scrollPosition + windowHeight >= documentHeight - 200) {
+                scrollDownBtn.classList.add('hidden');
+            } else {
+                scrollDownBtn.classList.remove('hidden');
+            }
+        }
+
+        window.addEventListener('scroll', updateScrollDownBtn);
+        updateScrollDownBtn();
 
         // Carousel functionality
         function scrollCarousel(direction) {
